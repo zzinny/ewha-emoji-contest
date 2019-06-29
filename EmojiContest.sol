@@ -19,7 +19,6 @@ contract EmojiContest {
     uint256[][] ranking;  // 1st, 2nd, 3rd prized id
     
     
-    
     function registerEmoji(uint256 id, string calldata imageHash, string calldata title) external {
         emojis.push(Emoji(id, imageHash, 0, msg.sender, title));
         creatorToEmojis[msg.sender].push(id);
@@ -42,7 +41,37 @@ contract EmojiContest {
         require(addressToBallotCount[msg.sender] < 5);
         addressToBallotCount[msg.sender]++;
         emojis[id].like++;
-
+        updateRanking(id);
     }
-    
+
+
+    function updateRanking(uint256 id) internal {
+        if(emojis[id].like >= emojis[ranking[0][0]].like) { // 1st
+            if(emojis[id].like == emojis[ranking[0][0]].like) {
+                ranking[0].push(id);
+            }
+            else {
+                delete ranking[0];
+                ranking[0].push(id);
+            }
+        }
+        else if(emojis[id].like >= emojis[ranking[1][0]].like) {    // 2nd
+            if(emojis[id].like == emojis[ranking[1][0]].like) {
+                ranking[1].push(id);
+            }
+            else {
+                delete ranking[1];
+                ranking[1].push(id);
+            }
+        }
+        else if(emojis[id].like >= emojis[ranking[2][0]].like) {    // 3rd
+            if(emojis[id].like == emojis[ranking[2][0]].like) {
+                ranking[2].push(id);
+            }
+            else {
+                delete ranking[2];
+                ranking[2].push(id);
+            }
+        }
+    }
 }
